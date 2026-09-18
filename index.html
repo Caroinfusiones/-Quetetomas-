@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>¿Qué te tomás? — Guía de infusiones</title>
+<link rel="manifest" href="manifest.json">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
+<meta name="theme-color" content="#0D1710">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Qué te tomás">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
+
+  :root{
+    --bg: #0D1710;
+    --bg-soft: #17251A;
+    --paper: #F3EFE3;
+    --paper-dim: #CBC7B8;
+    --gold: #C9A227;
+    --sage: #6FA378;
+    --sage-dim: #3E5A44;
+    --warn: #C97A2E;
+    --danger: #A8452F;
+    --line: rgba(111,163,120,0.22);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0; padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse 700px 400px at 50% -60px, rgba(111,163,120,0.16), transparent 70%),
+      var(--bg);
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    line-height:1.55;
+    min-height:100vh;
+  }
+
+  .app{
+    max-width:600px;
+    margin:0 auto;
+    padding:40px 22px 70px;
+  }
+
+  h1,h2,h3,h4{
+    font-family:'Fraunces', serif;
+    font-weight:500;
+    margin:0;
+    color:var(--paper);
+  }
+
+  p{margin:0;}
+
+  .header{text-align:center; margin-bottom:38px;}
+  .leaf{width:78px; height:40px; margin:0 auto 14px; display:block;}
+  .header h1{font-size:30px; letter-spacing:-0.01em;}
+  .header .sub{color:var(--paper-dim); font-size:15px; margin-top:8px;}
+
+  .progress{display:flex; justify-content:center; gap:10px; margin-bottom:30px;}
+  .progress .dot{width:8px; height:8px; border-radius:50%; background:var(--line); transition:background 0.3s;}
+  .progress .dot.done{background:var(--gold);}
+
+  .card{
+    background:var(--bg-soft);
+    border:1px solid var(--sage-dim);
+    border-radius:14px 14px 4px 14px;
+    padding:26px 24px;
+  }
+  .card h2{font-size:21px; margin-bottom:14px;}
+
+  .field{margin-bottom:20px;}
+  .field label{display:block; font-size:14px; color:var(--paper-dim); margin-bottom:8px;}
+  textarea, input[type="text"]{
+    width:100%;
+    background:var(--bg);
+    border:1px solid var(--line);
+    border-radius:8px;
+    color:var(--paper);
+    font-family:'Inter', sans-serif;
+    font-size:15.5px;
+    padding:12px 14px;
+    resize:none;
+  }
+  textarea:focus, input:focus, button:focus-visible{outline:2px solid var(--gold); outline-offset:1px;}
+  textarea::placeholder, input::placeholder{color:var(--paper-dim);}
+
+  .btn{
+    display:inline-block;
+    background:var(--gold);
+    color:#1F2E23;
+    border:none;
+    border-radius:8px;
+    font-family:'Inter', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    padding:12px 22px;
+    cursor:pointer;
+    width:100%;
+    text-align:center;
+  }
+  .btn:hover{filter:brightness(1.08);}
+  .btn:disabled{opacity:0.45; cursor:not-allowed;}
+  .btn.secondary{background:transparent; color:var(--paper); border:1px solid var(--line);}
+
+  .yesno{display:flex; gap:10px; margin-top:6px;}
+  .yesno button{
+    flex:1; background:var(--bg); border:1px solid var(--line); color:var(--paper);
+    border-radius:8px; padding:10px; font-family:'Inter', sans-serif; font-size:14.5px; cursor:pointer;
+  }
+  .yesno button.active{background:var(--sage); border-color:var(--sage); color:#152018; font-weight:600;}
+
+  .question{margin-bottom:24px;}
+  .question p{font-size:15.5px; margin-bottom:2px;}
+
+  .section-heading{
+    font-size:14px;
+    color:var(--paper-dim);
+    margin:26px 0 14px;
+  }
+  .section-heading:first-child{margin-top:0;}
+
+  .combo-card{
+    background:linear-gradient(180deg, rgba(201,162,39,0.10), rgba(201,162,39,0.03));
+    border:1px solid var(--gold);
+    border-radius:14px;
+    padding:22px 24px;
+    margin-bottom:22px;
+  }
+  .combo-card h3{font-size:19px; margin-bottom:4px;}
+  .combo-card .combo-sub{color:var(--paper-dim); font-size:13.5px; margin-bottom:16px;}
+  .combo-ingredientes{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:16px;}
+  .combo-ingredientes span{
+    background:rgba(243,239,227,0.08); border:1px solid var(--line);
+    border-radius:20px; padding:5px 12px; font-size:13px;
+  }
+  .combo-pasos{font-size:14px; margin-bottom:14px;}
+  .combo-pasos p{margin-bottom:6px;}
+  .combo-card .precaution{
+    padding-top:12px; border-top:1px dashed var(--sage-dim);
+    font-family:'IBM Plex Mono', monospace; font-size:12px; line-height:1.6;
+    color:#E7C99A; letter-spacing:0.01em;
+  }
+  .combo-card .precaution::before{
+    content:"⚠ PRECAUCIÓN";
+    display:block;
+    font-size:10.5px;
+    letter-spacing:0.12em;
+    color:var(--warn);
+    margin-bottom:6px;
+  }
+
+  .result-card{
+    background:var(--bg-soft);
+    border:1px solid var(--sage-dim);
+    border-left:3px solid var(--sage);
+    border-radius:4px 12px 12px 4px;
+    padding:20px 22px;
+    margin-bottom:16px;
+  }
+  .result-card h3{font-size:18px; margin-bottom:6px;}
+  .result-card .why{color:var(--paper-dim); font-size:14px; margin-bottom:14px;}
+  .result-card .row{display:flex; gap:10px; font-size:13.5px; margin-bottom:6px;}
+  .result-card .row .tag{flex:none; color:var(--gold); font-size:12.5px; padding-top:1px;}
+  .result-card .precaution{
+    margin-top:14px; padding-top:12px; border-top:1px dashed var(--sage-dim);
+    font-family:'IBM Plex Mono', monospace; font-size:12px; line-height:1.6;
+    color:#E7C99A; letter-spacing:0.01em;
+  }
+  .result-card .precaution::before{
+    content:"⚠ PRECAUCIÓN";
+    display:block;
+    font-size:10.5px;
+    letter-spacing:0.12em;
+    color:var(--warn);
+    margin-bottom:6px;
+  }
+
+  .excluded-card{
+    background:transparent; border:1px dashed var(--danger); border-radius:10px;
+    padding:16px 18px; margin-bottom:14px; opacity:0.9;
+  }
+  .excluded-card h4{font-size:15.5px; margin:0 0 6px; color:#E7A98D;}
+  .excluded-card p{font-size:13.5px; color:var(--paper-dim);}
+
+  .notice{
+    background:rgba(201,122,46,0.12); border:1px solid var(--warn);
+    border-radius:10px; padding:16px 18px; font-size:14px; margin-bottom:20px;
+  }
+
+  .redirect-card{
+    background:var(--bg-soft); border:1px solid var(--danger); border-radius:10px;
+    padding:24px; text-align:center;
+  }
+  .redirect-card h2{font-size:20px; margin-bottom:10px;}
+  .redirect-card p{color:var(--paper-dim); font-size:15px;}
+
+  .footer-actions{margin-top:26px;}
+  small.hint{display:block; color:var(--paper-dim); font-size:12.5px; margin-top:6px;}
+
+  @media (max-width:480px){ .app{padding:28px 16px 60px;} }
+</style>
+</head>
+<body>
+<div class="app" id="app"></div>
+
+<script>
+const PLANTS = {
+  te_verde: { nombre:"Té verde", g:4.5, metodo:"infusion", tapar:false, tempo:"70-80°C", tiempo:"2-3 min", frio:"6-12 hs",
+    precauciones:{ embarazo:null, medicacion:"Contiene cafeína — si tomás medicación que interactúe con estimulantes, consultá." } },
+  menta: { nombre:"Menta", g:3.5, metodo:"infusion", tapar:false, tempo:"90-100°C", tiempo:"5-10 min", frio:"4-8 hs",
+    precauciones:{ embarazo:null, medicacion:null, otra:"Puede empeorar el reflujo/acidez — evitar si tenés ese problema." } },
+  hierbabuena: { nombre:"Hierbabuena", g:3.5, metodo:"infusion", tapar:false, tempo:"90-100°C", tiempo:"5-7 min", frio:"4-6 hs",
+    precauciones:{ embarazo:null, medicacion:null } },
+  albahaca: { nombre:"Albahaca (o tulsi)", g:1.25, metodo:"infusion", tapar:true, tempo:"casi hirviendo (no hervir directo)", tiempo:"5-7 min", frio:"4-6 hs",
+    precauciones:{ embarazo:"advertencia", medicacion:"Contiene vitamina K — precaución con anticoagulantes. Puede bajar el azúcar en sangre — precaución con medicación para diabetes." } },
+  manzanilla: { nombre:"Manzanilla", g:3.5, metodo:"infusion", tapar:true, tempo:"90-100°C", tiempo:"5 min (no más)", frio:"6-8 hs",
+    precauciones:{ embarazo:"advertencia", medicacion:"Leve efecto sobre coagulación y sobre sedantes/ansiolíticos — precaución si tomás alguno.", otra:"Evitar si sos alérgica a la familia de las margaritas (Asteraceae)." } },
+  boldo: { nombre:"Boldo", g:2.5, metodo:"infusion", tapar:false, tempo:"casi hirviendo", tiempo:"5-10 min", frio:"poco común",
+    precauciones:{ embarazo:"excluir", medicacion:"Precaución con anticoagulantes.", otra:"Contraindicado con cálculos biliares o enfermedad hepática. Uso puntual, no diario." } },
+  hibisco: { nombre:"Flor de jamaica (hibisco)", g:9, metodo:"hervir", tapar:true, tempo:"hervor", tiempo:"5-10 min + reposo tapado", frio:"6-10 hs",
+    precauciones:{ embarazo:null, medicacion:"Baja levemente la presión arterial — precaución si tomás medicación para la presión." } },
+  jengibre: { nombre:"Jengibre", g:12.5, metodo:"hervir", tapar:false, tempo:"hervor", tiempo:"5-8 min", frio:"mejor en caliente",
+    precauciones:{ embarazo:null, medicacion:"En dosis altas, leve efecto anticoagulante — precaución si tomás anticoagulantes." } },
+  hinojo: { nombre:"Hinojo", g:4, metodo:"hervir", tapar:false, tempo:"hervor", tiempo:"5-8 min", frio:"poco común",
+    precauciones:{ embarazo:"excluir", medicacion:"Puede interferir con anticonceptivos hormonales.", otra:"Evitar con antecedentes de epilepsia o alergia a la familia Apiaceae (perejil, apio)." } },
+  perejil: { nombre:"Perejil", g:2.5, metodo:"infusion", tapar:false, tempo:"90-100°C sin hervor agresivo", tiempo:"5 min", frio:"4-6 hs",
+    precauciones:{ embarazo:"excluir", medicacion:"Precaución con anticoagulantes (vitamina K).", otra:"Precaución con problemas renales." } },
+  oregano: { nombre:"Orégano", g:2.5, metodo:"infusion", tapar:false, tempo:"90-100°C", tiempo:"5-8 min", frio:"4-6 hs",
+    precauciones:{ embarazo:"advertencia", medicacion:"Puede bajar el azúcar en sangre y tiene leve efecto anticoagulante — precaución con medicación relacionada." } },
+  tomillo: { nombre:"Tomillo", g:2.5, metodo:"infusion", tapar:false, tempo:"90-100°C", tiempo:"5-8 min", frio:"4-6 hs",
+    precauciones:{ embarazo:"advertencia", medicacion:"Precaución con anticoagulantes." } },
+  anis_verde: { nombre:"Anís verde", g:3.5, metodo:"hervir", tapar:false, tempo:"hervor", tiempo:"5-8 min", frio:"poco común",
+    precauciones:{ embarazo:"advertencia", medicacion:null, otra:"Efecto levemente estrogénico — precaución en condiciones hormono-sensibles." } },
+  anis_estrellado: { nombre:"Anís estrellado", g:2, metodo:"hervir", tapar:false, tempo:"hervor", tiempo:"5-10 min", frio:"—",
+    precauciones:{ embarazo:"excluir", medicacion:null, otra:"Máximo 1 estrella por cada 200 ml, no más de 3 tazas al día. Riesgo real de contaminación con anís estrellado japonés (tóxico). Contraindicado en menores de 3 años." } },
+  clavo: { nombre:"Clavos de olor", g:1.5, metodo:"hervir", tapar:false, tempo:"hervor", tiempo:"5-8 min", frio:"6-8 hs",
+    precauciones:{ embarazo:"advertencia", medicacion:"Leve efecto sobre coagulación — precaución con anticoagulantes." } },
+  canela: { nombre:"Canela", g:3.5, metodo:"hervir", tapar:false, tempo:"hervor", tiempo:"8-10 min", frio:"6-8 hs",
+    precauciones:{ embarazo:"advertencia", medicacion:"Puede bajar el azúcar en sangre — precaución con medicación para diabetes.", otra:"Si se toma seguido, preferir canela de Ceilán (menos cumarina) por sobre la cassia común." } },
+  curcuma: { nombre:"Cúrcuma", g:2.5, metodo:"hervir", tapar:false, tempo:"hervor + pizca de pimienta negra", tiempo:"8-10 min", frio:"poco común",
+    precauciones:{ embarazo:"advertencia", medicacion:"Leve efecto sobre coagulación — precaución con anticoagulantes.", otra:"Contraindicada con cálculos biliares. Suspender antes de cirugías programadas." } },
+  salvia: { nombre:"Salvia", g:2.5, metodo:"infusion", tapar:true, tempo:"90-100°C", tiempo:"5-7 min", frio:"4-6 hs",
+    precauciones:{ embarazo:"excluir", medicacion:"Precaución con medicación para la presión o anticonvulsivantes.", otra:"No tomar de forma continua e indefinida — usar en ciclos con descansos." } },
+};
+
+const SINTOMAS = [
+  { id:"gripe", keywords:["gripe","resfri","congesti","tos","garganta"], titulo:"Gripe / resfrío / garganta",
+    plantas:[
+      {id:"jengibre", motivo:"Calienta y ayuda a descongestionar."},
+      {id:"tomillo", motivo:"Tradicionalmente usado para tos y garganta irritada."},
+      {id:"canela", motivo:"Aporta calidez, buena combinación con jengibre."},
+      {id:"clavo", motivo:"Complementa el efecto de las especias para resfríos."},
+    ]},
+  { id:"digestion", keywords:["digesti","panza","estomago","estómago","hinchaz","gases","pesad","empach"], titulo:"Digestión pesada / hinchazón / gases",
+    plantas:[
+      {id:"menta", motivo:"Relaja el tracto digestivo y alivia gases."},
+      {id:"hierbabuena", motivo:"Versión más suave de la menta, buena para digestión liviana."},
+      {id:"hinojo", motivo:"Clásico para gases e hinchazón."},
+      {id:"anis_verde", motivo:"Digestivo, dupla tradicional con el hinojo."},
+      {id:"manzanilla", motivo:"Relaja el músculo digestivo, sin el riesgo de reflujo de la menta."},
+    ]},
+  { id:"comida_pesada", keywords:["comi mucho","comida pesada","grasos","asado","empach"], titulo:"Comida muy pesada o grasosa",
+    plantas:[
+      {id:"boldo", motivo:"Estimula la producción de bilis, ideal después de comidas grasosas."},
+      {id:"menta", motivo:"Suaviza el amargor del boldo y suma su propio efecto digestivo."},
+      {id:"jengibre", motivo:"Complementa el efecto digestivo."},
+    ]},
+  { id:"reflujo", keywords:["reflujo","acidez","ardor"], titulo:"Reflujo / acidez",
+    plantas:[
+      {id:"manzanilla", motivo:"De las pocas infusiones que suelen tolerarse bien con reflujo."},
+      {id:"jengibre", motivo:"En cantidades chicas puede ayudar sin empeorar la acidez."},
+    ],
+    nota:"Evitá menta y té verde con reflujo — pueden empeorarlo." },
+  { id:"insomnio", keywords:["dormir","insomnio","sueño","no puedo dormir","descans"], titulo:"Dificultad para dormir / relajación",
+    plantas:[ {id:"manzanilla", motivo:"La infusión con más respaldo científico real para dormir."} ],
+    nota:"La menta y la hierbabuena NO ayudan a dormir — tienen un efecto más bien activante." },
+  { id:"cabeza", keywords:["dolor de cabeza","cefalea","migra"], titulo:"Dolor de cabeza leve",
+    plantas:[ {id:"menta", motivo:"El mentol se asocia tradicionalmente con alivio leve de dolor de cabeza."} ] },
+  { id:"sofocos", keywords:["sofoco","calor repentino","sudor nocturno","menopaus","perimenopaus"], titulo:"Sofocos (perimenopausia / menopausia)",
+    plantas:[ {id:"salvia", motivo:"Es la planta con más evidencia científica real para reducir sofocos y sudores nocturnos."} ],
+    nota:"Algunas personas notan mejoría general con el hábito diario de tomar infusiones (cualquiera sea la combinación) sostenido durante varios meses. No hay una planta específica comprobada para ese efecto general — puede deberse a la regularidad del hábito, la hidratación o la pausa de relajación, más que a la planta en sí." },
+  { id:"inflamacion", keywords:["inflama","dolor muscular","hinchazon general"], titulo:"Inflamación general",
+    plantas:[
+      {id:"curcuma", motivo:"La combinación con más evidencia para inflamación (junto con pimienta negra)."},
+      {id:"oregano", motivo:"Antioxidante, aporta un efecto antiinflamatorio adicional."},
+      {id:"tomillo", motivo:"Suma efecto antiinflamatorio leve."},
+      {id:"anis_verde", motivo:"Complementa el perfil digestivo/antiinflamatorio del resto."},
+      {id:"clavo", motivo:"El eugenol aporta un efecto antiinflamatorio adicional."},
+      {id:"albahaca", motivo:"Antiinflamatorio, buena dupla con la cúrcuma."},
+    ]},
+  { id:"colicos_menstruales", keywords:["colico","cólico","menstrua","regla","periodo menstrual"], titulo:"Cólicos menstruales",
+    plantas:[
+      {id:"hinojo", motivo:"Antiespasmódico, uso tradicional para cólicos menstruales."},
+      {id:"manzanilla", motivo:"Relaja el músculo liso, alivia el dolor."},
+      {id:"jengibre", motivo:"Antiinflamatorio y digestivo, buen complemento."},
+    ]},
+];
+
+const PALABRAS_BEBE = ["bebe","bebé","recien nacido","recién nacido","lactante","niño","niña","mi hijo","mi hija"];
+
+function calcularGramosCombinado(gBase, n){
+  const factor = 2 / (n + 1);
+  const val = gBase * factor;
+  return Math.max(1, Math.round(val * 10) / 10);
+}
+
+function generarCombinacion(itemsIncluidos){
+  if(itemsIncluidos.length < 2) return null;
+  const duros = itemsIncluidos.filter(i => i.planta.metodo === 'hervir');
+  const delicados = itemsIncluidos.filter(i => i.planta.metodo === 'infusion');
+  const n = itemsIncluidos.length;
+
+  const ingredientes = itemsIncluidos.map(i => ({
+    nombre: i.planta.nombre,
+    gramos: calcularGramosCombinado(i.planta.g, n),
+  }));
+
+  let pasos = [];
+  if(duros.length && delicados.length){
+    const tiempoDuros = duros.map(d => d.planta.tiempo).sort().slice(-1)[0];
+    pasos.push(`Hervir ${duros.map(d=>d.planta.nombre.toLowerCase()).join(', ')} en 1 litro de agua, ${tiempoDuros}.`);
+    const necesitaTapar = delicados.some(d => d.planta.tapar);
+    pasos.push(`Apagar el fuego. Agregar ${delicados.map(d=>d.planta.nombre.toLowerCase()).join(', ')}${necesitaTapar ? ', tapar' : ''} y dejar reposar 5-7 min más.`);
+  } else if(duros.length){
+    pasos.push(`Hervir todo junto en 1 litro de agua, 8-10 min.`);
+  } else {
+    const necesitaTapar = delicados.some(d => d.planta.tapar);
+    pasos.push(`Agua caliente (90-100°C), agregar todo junto${necesitaTapar ? ', tapar' : ''} y dejar reposar 5-7 min.`);
+  }
+  pasos.push(`Colar y servir. Para 1 litro.`);
+
+  const precauciones = new Set();
+  itemsIncluidos.forEach(i => { i.advertencias.forEach(a => precauciones.add(a)); });
+
+  return { ingredientes, pasos, precauciones: Array.from(precauciones) };
+}
+
+let state = { step:1, sintomaTexto:"", categoria:null, embarazo:null, medicacion:null, medicacionDetalle:"" };
+const root = document.getElementById('app');
+
+function leafSVG(){
+  const leaf = (cx, cy, rot, scale, color) => `
+    <g transform="translate(${cx},${cy}) rotate(${rot}) scale(${scale})">
+      <path d="M0 -16C-10 -10 -14 2 -8 12C-2 10 6 2 8 -8C8 -8 4 -14 0 -16Z" stroke="${color}" stroke-width="1.6" fill="none"/>
+      <path d="M0 -16C0 -6 -2 4 -8 12" stroke="${color}" stroke-width="1.1" fill="none"/>
+    </g>`;
+  return `<svg class="leaf" viewBox="0 0 110 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+    ${leaf(24, 34, -18, 1.15, '#C9A227')}
+    ${leaf(48, 22, 10, 0.9, '#6FA378')}
+    ${leaf(68, 34, -8, 1.0, '#DCC066')}
+    ${leaf(86, 20, 22, 0.75, '#8CBB8F')}
+    ${leaf(56, 40, 30, 0.65, '#4F7856')}
+  </svg>`;
+}
+
+function progressDots(active){
+  let dots = '';
+  for(let i=1;i<=3;i++) dots += `<div class="dot ${i<=active?'done':''}"></div>`;
+  return `<div class="progress">${dots}</div>`;
+}
+
+function render(){
+  if(state.step === 1) return renderStep1();
+  if(state.step === 'bloqueo_bebe') return renderBloqueoBebe();
+  if(state.step === 'no_reconocido') return renderNoReconocido();
+  if(state.step === 2) return renderStep2();
+  if(state.step === 3) return renderStep3();
+}
+
+function renderStep1(){
+  root.innerHTML = `
+    <div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1><p class="sub">Contame qué te está pasando y te sugiero una infusión.</p></div>
+    ${progressDots(1)}
+    <div class="card">
+      <h2>¿Qué te está pasando?</h2>
+      <div class="field">
+        <textarea id="sintoma-input" rows="3" placeholder="Ej: me duele la panza, no puedo dormir, tengo gripe..."></textarea>
+        <small class="hint" id="error-vacio" style="display:none; color:#E7A98D;">Escribí algo antes de continuar.</small>
+      </div>
+      <button class="btn" id="btn-continuar">Continuar</button>
+    </div>
+  `;
+  document.getElementById('btn-continuar').onclick = () => {
+    const val = document.getElementById('sintoma-input').value.trim();
+    if(!val){ document.getElementById('error-vacio').style.display = 'block'; return; }
+    state.sintomaTexto = val;
+    const textoLower = val.toLowerCase();
+    if(PALABRAS_BEBE.some(p => textoLower.includes(p))){ state.step = 'bloqueo_bebe'; render(); return; }
+    const match = SINTOMAS.find(s => s.keywords.some(k => textoLower.includes(k)));
+    if(!match){ state.step = 'no_reconocido'; render(); return; }
+    state.categoria = match;
+    state.step = 2;
+    render();
+  };
+}
+
+function renderBloqueoBebe(){
+  root.innerHTML = `
+    <div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>
+    <div class="redirect-card">
+      <h2>Esta app es para adultos</h2>
+      <p>Para bebés y niños pequeños, las infusiones herbales pueden ser riesgosas incluso cuando parecen un remedio casero tradicional. Consultá directamente con un pediatra antes de darle cualquier infusión.</p>
+    </div>
+    <div class="footer-actions"><button class="btn secondary" id="btn-volver">Buscar otro síntoma</button></div>
+  `;
+  document.getElementById('btn-volver').onclick = resetApp;
+}
+
+function renderNoReconocido(){
+  root.innerHTML = `
+    <div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>
+    <div class="redirect-card">
+      <h2>No tenemos una sugerencia segura para esto</h2>
+      <p>No encontramos una infusión con respaldo suficiente para lo que describís. Te recomendamos consultar a un profesional de la salud.</p>
+    </div>
+    <div class="footer-actions"><button class="btn secondary" id="btn-volver">Buscar otro síntoma</button></div>
+  `;
+  document.getElementById('btn-volver').onclick = resetApp;
+}
+
+function renderStep2(){
+  root.innerHTML = `
+    <div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>
+    ${progressDots(2)}
+    <div class="card">
+      <h2>Antes de sugerirte algo</h2>
+      <div class="question">
+        <p>¿Estás embarazada?</p>
+        <div class="yesno"><button data-val="si" data-q="embarazo">Sí</button><button data-val="no" data-q="embarazo">No</button></div>
+      </div>
+      <div class="question">
+        <p>¿Tomás algún medicamento de forma regular?</p>
+        <div class="yesno"><button data-val="si" data-q="medicacion">Sí</button><button data-val="no" data-q="medicacion">No</button></div>
+      </div>
+      <div class="field" id="medicacion-detalle-wrap" style="display:none;">
+        <label>¿Cuál? (opcional)</label>
+        <input type="text" id="medicacion-detalle" placeholder="Ej: anticoagulantes, para la presión...">
+      </div>
+      <button class="btn" id="btn-ver-resultado" disabled>Ver sugerencia</button>
+    </div>
+  `;
+  const buttons = root.querySelectorAll('.yesno button');
+  buttons.forEach(b => {
+    b.onclick = () => {
+      const q = b.dataset.q, val = b.dataset.val;
+      state[q] = val;
+      root.querySelectorAll(`[data-q="${q}"]`).forEach(x => x.classList.remove('active'));
+      b.classList.add('active');
+      document.getElementById('medicacion-detalle-wrap').style.display = state.medicacion === 'si' ? 'block' : 'none';
+      checkEnableContinue();
+    };
+  });
+  function checkEnableContinue(){
+    document.getElementById('btn-ver-resultado').disabled = !(state.embarazo !== null && state.medicacion !== null);
+  }
+  document.getElementById('btn-ver-resultado').onclick = () => {
+    state.medicacionDetalle = document.getElementById('medicacion-detalle').value.trim();
+    state.step = 3;
+    render();
+  };
+}
+
+function renderStep3(){
+  const cat = state.categoria;
+  const incluidas = [], excluidas = [];
+
+  cat.plantas.forEach(p => {
+    const planta = PLANTS[p.id];
+    const prec = planta.precauciones;
+    let excluida = false;
+    let advertencias = [];
+
+    if(state.embarazo === 'si' && prec.embarazo === 'excluir'){ excluida = true; }
+    else if(state.embarazo === 'si' && prec.embarazo === 'advertencia'){
+      advertencias.push('Precaución en embarazo — dosis de infusión ocasional suele tener menor riesgo, pero consultá con tu médico.');
+    }
+    if(!excluida && state.medicacion === 'si' && prec.medicacion) advertencias.push(prec.medicacion);
+    if(prec.otra) advertencias.push(prec.otra);
+
+    const item = { ...p, planta, advertencias };
+    if(excluida) excluidas.push(item); else incluidas.push(item);
+  });
+
+  let html = `<div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>${progressDots(3)}`;
+
+  if(cat.nota) html += `<div class="notice">${cat.nota}</div>`;
+
+  if(incluidas.length === 0){
+    html += `
+      <div class="redirect-card">
+        <h2>Nada seguro para tu situación puntual</h2>
+        <p>Las opciones que normalmente sugerimos para esto no son recomendables según lo que marcaste. Te recomendamos consultar a un profesional de la salud.</p>
+      </div>`;
+  } else {
+    const combo = generarCombinacion(incluidas);
+    if(combo){
+      html += `<p class="section-heading">Combinación armada para "${cat.titulo.toLowerCase()}"</p>`;
+      html += `
+        <div class="combo-card">
+          <h3>Infusión combinada</h3>
+          <p class="combo-sub">Cantidades ya calculadas para 1 litro de agua.</p>
+          <div class="combo-ingredientes">
+            ${combo.ingredientes.map(ing => `<span>${ing.nombre} — ${ing.gramos} g</span>`).join('')}
+          </div>
+          <div class="combo-pasos">${combo.pasos.map(p => `<p>${p}</p>`).join('')}</div>
+          ${combo.precauciones.length ? `<div class="precaution">${combo.precauciones.join(' ')}</div>` : ''}
+        </div>
+      `;
+    }
+
+    html += `<p class="section-heading">O por separado, esto puede ayudarte:</p>`;
+    incluidas.forEach(item => {
+      html += `
+        <div class="result-card">
+          <h3>${item.planta.nombre}</h3>
+          <p class="why">${item.motivo}</p>
+          <div class="row"><span class="tag">Preparación</span><span>${item.planta.tempo}, ${item.planta.tiempo}, ${item.planta.g} g/litro. En frío: ${item.planta.frio}.</span></div>
+          ${item.advertencias.length ? `<div class="precaution">${item.advertencias.join(' ')}</div>` : ''}
+        </div>
+      `;
+    });
+  }
+
+  if(excluidas.length){
+    html += `<p class="section-heading">Normalmente también ayudaría, pero no te lo sugerimos:</p>`;
+    excluidas.forEach(item => {
+      const motivo = state.embarazo === 'si' ? 'Contraindicado en embarazo.' : '';
+      html += `<div class="excluded-card"><h4>${item.planta.nombre}</h4><p>${motivo} ${item.planta.precauciones.otra || ''}</p></div>`;
+    });
+  }
+
+  html += `<div class="footer-actions"><button class="btn secondary" id="btn-otro">Buscar otro síntoma</button></div>`;
+
+  root.innerHTML = html;
+  document.getElementById('btn-otro').onclick = resetApp;
+}
+
+function resetApp(){
+  state = { step:1, sintomaTexto:"", categoria:null, embarazo:null, medicacion:null, medicacionDetalle:"" };
+  render();
+}
+
+render();
+
+if('serviceWorker' in navigator){
+  window.addEventListener('load', () => {
+    navigator.serviceWorker.register('service-worker.js').catch(() => {});
+  });
+}
+</script>
+</body>
+</html>

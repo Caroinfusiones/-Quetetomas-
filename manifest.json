@@ -1,0 +1,16 @@
+{
+  "name": "¿Qué te tomás? — Guía de infusiones",
+  "short_name": "Qué te tomás",
+  "description": "Sugerencia de infusiones seguras según tu síntoma, con preparación y precauciones.",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#0D1710",
+  "theme_color": "#0D1710",
+  "orientation": "portrait",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
