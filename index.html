@@ -13,7 +13,7 @@
 <meta name="apple-mobile-web-app-title" content="Qué te tomás">
 <style>
   @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap');
-
+ 
   :root{
     --bg: #0D1710;
     --bg-soft: #17251A;
@@ -26,7 +26,7 @@
     --danger: #A8452F;
     --line: rgba(111,163,120,0.22);
   }
-
+ 
   *{box-sizing:border-box;}
   html,body{margin:0; padding:0;}
   body{
@@ -38,31 +38,31 @@
     line-height:1.55;
     min-height:100vh;
   }
-
+ 
   .app{
     max-width:600px;
     margin:0 auto;
     padding:40px 22px 70px;
   }
-
+ 
   h1,h2,h3,h4{
     font-family:'Fraunces', serif;
     font-weight:500;
     margin:0;
     color:var(--paper);
   }
-
+ 
   p{margin:0;}
-
+ 
   .header{text-align:center; margin-bottom:38px;}
   .leaf{width:78px; height:40px; margin:0 auto 14px; display:block;}
   .header h1{font-size:30px; letter-spacing:-0.01em;}
   .header .sub{color:var(--paper-dim); font-size:15px; margin-top:8px;}
-
+ 
   .progress{display:flex; justify-content:center; gap:10px; margin-bottom:30px;}
   .progress .dot{width:8px; height:8px; border-radius:50%; background:var(--line); transition:background 0.3s;}
   .progress .dot.done{background:var(--gold);}
-
+ 
   .card{
     background:var(--bg-soft);
     border:1px solid var(--sage-dim);
@@ -70,7 +70,7 @@
     padding:26px 24px;
   }
   .card h2{font-size:21px; margin-bottom:14px;}
-
+ 
   .field{margin-bottom:20px;}
   .field label{display:block; font-size:14px; color:var(--paper-dim); margin-bottom:8px;}
   textarea, input[type="text"]{
@@ -86,7 +86,7 @@
   }
   textarea:focus, input:focus, button:focus-visible{outline:2px solid var(--gold); outline-offset:1px;}
   textarea::placeholder, input::placeholder{color:var(--paper-dim);}
-
+ 
   .btn{
     display:inline-block;
     background:var(--gold);
@@ -104,24 +104,24 @@
   .btn:hover{filter:brightness(1.08);}
   .btn:disabled{opacity:0.45; cursor:not-allowed;}
   .btn.secondary{background:transparent; color:var(--paper); border:1px solid var(--line);}
-
+ 
   .yesno{display:flex; gap:10px; margin-top:6px;}
   .yesno button{
     flex:1; background:var(--bg); border:1px solid var(--line); color:var(--paper);
     border-radius:8px; padding:10px; font-family:'Inter', sans-serif; font-size:14.5px; cursor:pointer;
   }
   .yesno button.active{background:var(--sage); border-color:var(--sage); color:#152018; font-weight:600;}
-
+ 
   .question{margin-bottom:24px;}
   .question p{font-size:15.5px; margin-bottom:2px;}
-
+ 
   .section-heading{
     font-size:14px;
     color:var(--paper-dim);
     margin:26px 0 14px;
   }
   .section-heading:first-child{margin-top:0;}
-
+ 
   .combo-card{
     background:linear-gradient(180deg, rgba(201,162,39,0.10), rgba(201,162,39,0.03));
     border:1px solid var(--gold);
@@ -151,7 +151,7 @@
     color:var(--warn);
     margin-bottom:6px;
   }
-
+ 
   .result-card{
     background:var(--bg-soft);
     border:1px solid var(--sage-dim);
@@ -177,35 +177,35 @@
     color:var(--warn);
     margin-bottom:6px;
   }
-
+ 
   .excluded-card{
     background:transparent; border:1px dashed var(--danger); border-radius:10px;
     padding:16px 18px; margin-bottom:14px; opacity:0.9;
   }
   .excluded-card h4{font-size:15.5px; margin:0 0 6px; color:#E7A98D;}
   .excluded-card p{font-size:13.5px; color:var(--paper-dim);}
-
+ 
   .notice{
     background:rgba(201,122,46,0.12); border:1px solid var(--warn);
     border-radius:10px; padding:16px 18px; font-size:14px; margin-bottom:20px;
   }
-
+ 
   .redirect-card{
     background:var(--bg-soft); border:1px solid var(--danger); border-radius:10px;
     padding:24px; text-align:center;
   }
   .redirect-card h2{font-size:20px; margin-bottom:10px;}
   .redirect-card p{color:var(--paper-dim); font-size:15px;}
-
+ 
   .footer-actions{margin-top:26px;}
   small.hint{display:block; color:var(--paper-dim); font-size:12.5px; margin-top:6px;}
-
+ 
   @media (max-width:480px){ .app{padding:28px 16px 60px;} }
 </style>
 </head>
 <body>
 <div class="app" id="app"></div>
-
+ 
 <script>
 const PLANTS = {
   te_verde: { nombre:"Té verde", g:4.5, metodo:"infusion", tapar:false, tempo:"70-80°C", tiempo:"2-3 min", frio:"6-12 hs",
@@ -245,7 +245,7 @@ const PLANTS = {
   salvia: { nombre:"Salvia", g:2.5, metodo:"infusion", tapar:true, tempo:"90-100°C", tiempo:"5-7 min", frio:"4-6 hs",
     precauciones:{ embarazo:"excluir", medicacion:"Precaución con medicación para la presión o anticonvulsivantes.", otra:"No tomar de forma continua e indefinida — usar en ciclos con descansos." } },
 };
-
+ 
 const SINTOMAS = [
   { id:"gripe", keywords:["gripe","resfri","congesti","tos","garganta"], titulo:"Gripe / resfrío / garganta",
     plantas:[
@@ -282,7 +282,7 @@ const SINTOMAS = [
   { id:"sofocos", keywords:["sofoco","calor repentino","sudor nocturno","menopaus","perimenopaus"], titulo:"Sofocos (perimenopausia / menopausia)",
     plantas:[ {id:"salvia", motivo:"Es la planta con más evidencia científica real para reducir sofocos y sudores nocturnos."} ],
     nota:"Algunas personas notan mejoría general con el hábito diario de tomar infusiones (cualquiera sea la combinación) sostenido durante varios meses. No hay una planta específica comprobada para ese efecto general — puede deberse a la regularidad del hábito, la hidratación o la pausa de relajación, más que a la planta en sí." },
-  { id:"inflamacion", keywords:["inflama","dolor muscular","hinchazon general"], titulo:"Inflamación general",
+  { id:"inflamacion", keywords:["inflama","dolor muscular","hinchazon general","espalda","dolor de espalda"], titulo:"Inflamación general",
     plantas:[
       {id:"curcuma", motivo:"La combinación con más evidencia para inflamación (junto con pimienta negra)."},
       {id:"oregano", motivo:"Antioxidante, aporta un efecto antiinflamatorio adicional."},
@@ -298,26 +298,40 @@ const SINTOMAS = [
       {id:"jengibre", motivo:"Antiinflamatorio y digestivo, buen complemento."},
     ]},
 ];
-
+ 
 const PALABRAS_BEBE = ["bebe","bebé","recien nacido","recién nacido","lactante","niño","niña","mi hijo","mi hija"];
-
+ 
+/* Si aparece cualquiera de estas, se prioriza por sobre cualquier categoría de síntoma matcheada */
+const BANDERAS_ROJAS = [
+  "severo","severa","muy fuerte","insoportable","intenso","intensa",
+  "varios días","varios dias","hace días","hace dias","hace semanas","semanas sin",
+  "sangre","sangrado","desmay","convulsion","no puedo respirar","dificultad para respirar",
+];
+ 
+/* Si el texto no matchea ninguna categoría, pero suena a malestar físico real, usar el mensaje de "consultar médico".
+   Si no, usar un mensaje neutro (ej: "tengo hambre" no es un tema médico). */
+const PALABRAS_SINTOMA_GENERICO = [
+  "dolor","mare","sangre","fiebre","desmay","hormig","entumec",
+  "pecho","ingle","seno","mama","ojo","ardor",
+];
+ 
 function calcularGramosCombinado(gBase, n){
   const factor = 2 / (n + 1);
   const val = gBase * factor;
   return Math.max(1, Math.round(val * 10) / 10);
 }
-
+ 
 function generarCombinacion(itemsIncluidos){
   if(itemsIncluidos.length < 2) return null;
   const duros = itemsIncluidos.filter(i => i.planta.metodo === 'hervir');
   const delicados = itemsIncluidos.filter(i => i.planta.metodo === 'infusion');
   const n = itemsIncluidos.length;
-
+ 
   const ingredientes = itemsIncluidos.map(i => ({
     nombre: i.planta.nombre,
     gramos: calcularGramosCombinado(i.planta.g, n),
   }));
-
+ 
   let pasos = [];
   if(duros.length && delicados.length){
     const tiempoDuros = duros.map(d => d.planta.tiempo).sort().slice(-1)[0];
@@ -331,16 +345,16 @@ function generarCombinacion(itemsIncluidos){
     pasos.push(`Agua caliente (90-100°C), agregar todo junto${necesitaTapar ? ', tapar' : ''} y dejar reposar 5-7 min.`);
   }
   pasos.push(`Colar y servir. Para 1 litro.`);
-
+ 
   const precauciones = new Set();
   itemsIncluidos.forEach(i => { i.advertencias.forEach(a => precauciones.add(a)); });
-
+ 
   return { ingredientes, pasos, precauciones: Array.from(precauciones) };
 }
-
+ 
 let state = { step:1, sintomaTexto:"", categoria:null, embarazo:null, medicacion:null, medicacionDetalle:"" };
 const root = document.getElementById('app');
-
+ 
 function leafSVG(){
   const leaf = (cx, cy, rot, scale, color) => `
     <g transform="translate(${cx},${cy}) rotate(${rot}) scale(${scale})">
@@ -355,21 +369,23 @@ function leafSVG(){
     ${leaf(56, 40, 30, 0.65, '#4F7856')}
   </svg>`;
 }
-
+ 
 function progressDots(active){
   let dots = '';
   for(let i=1;i<=3;i++) dots += `<div class="dot ${i<=active?'done':''}"></div>`;
   return `<div class="progress">${dots}</div>`;
 }
-
+ 
 function render(){
   if(state.step === 1) return renderStep1();
   if(state.step === 'bloqueo_bebe') return renderBloqueoBebe();
+  if(state.step === 'alarma') return renderAlarma();
   if(state.step === 'no_reconocido') return renderNoReconocido();
+  if(state.step === 'no_reconocido_neutro') return renderNoReconocidoNeutro();
   if(state.step === 2) return renderStep2();
   if(state.step === 3) return renderStep3();
 }
-
+ 
 function renderStep1(){
   root.innerHTML = `
     <div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1><p class="sub">Contame qué te está pasando y te sugiero una infusión.</p></div>
@@ -389,14 +405,20 @@ function renderStep1(){
     state.sintomaTexto = val;
     const textoLower = val.toLowerCase();
     if(PALABRAS_BEBE.some(p => textoLower.includes(p))){ state.step = 'bloqueo_bebe'; render(); return; }
+    if(BANDERAS_ROJAS.some(p => textoLower.includes(p))){ state.step = 'alarma'; render(); return; }
     const match = SINTOMAS.find(s => s.keywords.some(k => textoLower.includes(k)));
-    if(!match){ state.step = 'no_reconocido'; render(); return; }
+    if(!match){
+      const sueneMedico = PALABRAS_SINTOMA_GENERICO.some(p => textoLower.includes(p));
+      state.step = sueneMedico ? 'no_reconocido' : 'no_reconocido_neutro';
+      render();
+      return;
+    }
     state.categoria = match;
     state.step = 2;
     render();
   };
 }
-
+ 
 function renderBloqueoBebe(){
   root.innerHTML = `
     <div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>
@@ -408,7 +430,31 @@ function renderBloqueoBebe(){
   `;
   document.getElementById('btn-volver').onclick = resetApp;
 }
-
+ 
+function renderAlarma(){
+  root.innerHTML = `
+    <div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>
+    <div class="redirect-card">
+      <h2>Esto necesita ver a un profesional</h2>
+      <p>Por lo que describís, no es algo para resolver con una infusión. Te recomendamos consultar a un profesional de la salud lo antes posible, en vez de automedicarte mientras tanto.</p>
+    </div>
+    <div class="footer-actions"><button class="btn secondary" id="btn-volver">Buscar otro síntoma</button></div>
+  `;
+  document.getElementById('btn-volver').onclick = resetApp;
+}
+ 
+function renderNoReconocidoNeutro(){
+  root.innerHTML = `
+    <div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>
+    <div class="redirect-card">
+      <h2>No tenemos algo para esto</h2>
+      <p>Esto no es algo que podamos ayudarte a resolver con una infusión de nuestra base de datos. Probá describiendo un malestar físico puntual.</p>
+    </div>
+    <div class="footer-actions"><button class="btn secondary" id="btn-volver">Buscar otro síntoma</button></div>
+  `;
+  document.getElementById('btn-volver').onclick = resetApp;
+}
+ 
 function renderNoReconocido(){
   root.innerHTML = `
     <div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>
@@ -420,7 +466,7 @@ function renderNoReconocido(){
   `;
   document.getElementById('btn-volver').onclick = resetApp;
 }
-
+ 
 function renderStep2(){
   root.innerHTML = `
     <div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>
@@ -462,32 +508,32 @@ function renderStep2(){
     render();
   };
 }
-
+ 
 function renderStep3(){
   const cat = state.categoria;
   const incluidas = [], excluidas = [];
-
+ 
   cat.plantas.forEach(p => {
     const planta = PLANTS[p.id];
     const prec = planta.precauciones;
     let excluida = false;
     let advertencias = [];
-
+ 
     if(state.embarazo === 'si' && prec.embarazo === 'excluir'){ excluida = true; }
     else if(state.embarazo === 'si' && prec.embarazo === 'advertencia'){
       advertencias.push('Precaución en embarazo — dosis de infusión ocasional suele tener menor riesgo, pero consultá con tu médico.');
     }
     if(!excluida && state.medicacion === 'si' && prec.medicacion) advertencias.push(prec.medicacion);
     if(prec.otra) advertencias.push(prec.otra);
-
+ 
     const item = { ...p, planta, advertencias };
     if(excluida) excluidas.push(item); else incluidas.push(item);
   });
-
+ 
   let html = `<div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>${progressDots(3)}`;
-
+ 
   if(cat.nota) html += `<div class="notice">${cat.nota}</div>`;
-
+ 
   if(incluidas.length === 0){
     html += `
       <div class="redirect-card">
@@ -510,7 +556,7 @@ function renderStep3(){
         </div>
       `;
     }
-
+ 
     html += `<p class="section-heading">O por separado, esto puede ayudarte:</p>`;
     incluidas.forEach(item => {
       html += `
@@ -523,7 +569,7 @@ function renderStep3(){
       `;
     });
   }
-
+ 
   if(excluidas.length){
     html += `<p class="section-heading">Normalmente también ayudaría, pero no te lo sugerimos:</p>`;
     excluidas.forEach(item => {
@@ -531,20 +577,20 @@ function renderStep3(){
       html += `<div class="excluded-card"><h4>${item.planta.nombre}</h4><p>${motivo} ${item.planta.precauciones.otra || ''}</p></div>`;
     });
   }
-
+ 
   html += `<div class="footer-actions"><button class="btn secondary" id="btn-otro">Buscar otro síntoma</button></div>`;
-
+ 
   root.innerHTML = html;
   document.getElementById('btn-otro').onclick = resetApp;
 }
-
+ 
 function resetApp(){
   state = { step:1, sintomaTexto:"", categoria:null, embarazo:null, medicacion:null, medicacionDetalle:"" };
   render();
 }
-
+ 
 render();
-
+ 
 if('serviceWorker' in navigator){
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('service-worker.js').catch(() => {});
@@ -553,3 +599,6 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
+ 
+
+Código
