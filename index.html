@@ -254,7 +254,7 @@ const SINTOMAS = [
       {id:"canela", motivo:"Aporta calidez, buena combinación con jengibre."},
       {id:"clavo", motivo:"Complementa el efecto de las especias para resfríos."},
     ]},
-  { id:"digestion", keywords:["digesti","panza","estomago","estómago","hinchaz","gases","pesad","empach"], titulo:"Digestión pesada / hinchazón / gases",
+  { id:"digestion", keywords:["digesti","panza","estomago","estómago","barriga","hinchaz","gases","pesad","empach"], titulo:"Digestión pesada / hinchazón / gases",
     plantas:[
       {id:"menta", motivo:"Relaja el tracto digestivo y alivia gases."},
       {id:"hierbabuena", motivo:"Versión más suave de la menta, buena para digestión liviana."},
@@ -279,6 +279,32 @@ const SINTOMAS = [
     nota:"La menta y la hierbabuena NO ayudan a dormir — tienen un efecto más bien activante." },
   { id:"cabeza", keywords:["dolor de cabeza","cefalea","migra"], titulo:"Dolor de cabeza leve",
     plantas:[ {id:"menta", motivo:"El mentol se asocia tradicionalmente con alivio leve de dolor de cabeza."} ] },
+  { id:"cansancio", keywords:["cansad","cansancio","agotad","sin energia","sin energía"], titulo:"Cansancio / agotamiento",
+    plantas:[ {id:"te_verde", motivo:"Aporta energía sostenida y calma (cafeína + L-teanina), sin el bajón típico del café."} ],
+    nota:"Si el cansancio viene de dormir poco o de una jornada muy exigida, la causa de fondo no se resuelve solo con la infusión — ayuda como acompañamiento, no como solución única." },
+  { id:"sed", keywords:["mucha sed","tengo sed","sed intensa","sediento","sedienta"], titulo:"Sed / bebida refrescante",
+    plantas:[],
+    combosManual:[
+      {
+        nombre:"Té verde con jengibre rallado (fría)",
+        componentes:[ {id:"te_verde", gramos:4.5}, {id:"jengibre", gramos:8} ],
+        pasos:[
+          "Hervir el jengibre rallado en 1 litro de agua, 5 min.",
+          "Retirar del fuego, agregar el té verde y dejar reposar 3 min (que no hierva junto con el té, para que no amargue).",
+          "Colar, dejar enfriar y refrigerar 4-6 hs. Servir bien fría, con hielo.",
+        ],
+      },
+      {
+        nombre:"Flor de jamaica con limón y canela (fría)",
+        componentes:[ {id:"hibisco", gramos:8}, {id:"canela", gramos:2} ],
+        notaExtra:"Agregar jugo de limón al gusto, al final, ya fría.",
+        pasos:[
+          "Hervir la flor de jamaica junto con la rama de canela en 1 litro de agua, 8-10 min.",
+          "Colar, agregar el jugo de limón al gusto.",
+          "Enfriar en la heladera 4-6 hs. Servir con hielo.",
+        ],
+      },
+    ] },
   { id:"sofocos", keywords:["sofoco","calor repentino","sudor nocturno","menopaus","perimenopaus"], titulo:"Sofocos (perimenopausia / menopausia)",
     plantas:[ {id:"salvia", motivo:"Es la planta con más evidencia científica real para reducir sofocos y sudores nocturnos."} ],
     nota:"Algunas personas notan mejoría general con el hábito diario de tomar infusiones (cualquiera sea la combinación) sostenido durante varios meses. No hay una planta específica comprobada para ese efecto general — puede deberse a la regularidad del hábito, la hidratación o la pausa de relajación, más que a la planta en sí." },
@@ -534,7 +560,34 @@ function renderStep3(){
  
   if(cat.nota) html += `<div class="notice">${cat.nota}</div>`;
  
-  if(incluidas.length === 0){
+  if(cat.combosManual){
+    html += `<p class="section-heading">Para "${cat.titulo.toLowerCase()}", estas recetas te pueden servir:</p>`;
+    cat.combosManual.forEach(receta => {
+      const advertencias = new Set();
+      receta.componentes.forEach(c => {
+        const planta = PLANTS[c.id];
+        const prec = planta.precauciones;
+        if(state.embarazo === 'si' && prec.embarazo === 'advertencia'){
+          advertencias.add('Precaución en embarazo — dosis de infusión ocasional suele tener menor riesgo, pero consultá con tu médico.');
+        }
+        if(state.medicacion === 'si' && prec.medicacion) advertencias.add(prec.medicacion);
+        if(prec.otra) advertencias.add(prec.otra);
+      });
+      html += `
+        <div class="combo-card">
+          <h3>${receta.nombre}</h3>
+          <div class="combo-ingredientes">
+            ${receta.componentes.map(c => `<span>${PLANTS[c.id].nombre} — ${c.gramos} g</span>`).join('')}
+          </div>
+          <div class="combo-pasos">
+            ${receta.pasos.map(p => `<p>${p}</p>`).join('')}
+            ${receta.notaExtra ? `<p><em>${receta.notaExtra}</em></p>` : ''}
+          </div>
+          ${advertencias.size ? `<div class="precaution">${Array.from(advertencias).join(' ')}</div>` : ''}
+        </div>
+      `;
+    });
+  } else if(incluidas.length === 0){
     html += `
       <div class="redirect-card">
         <h2>Nada seguro para tu situación puntual</h2>
@@ -601,4 +654,3 @@ if('serviceWorker' in navigator){
 </html>
  
 
-Código
