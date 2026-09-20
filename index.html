@@ -379,6 +379,63 @@ function generarCombinacion(itemsIncluidos){
 }
  
 let state = { step:1, sintomaTexto:"", categoria:null, embarazo:null, medicacion:null, medicacionDetalle:"" };
+ 
+/* ============ FAVORITOS (guardado local del navegador) ============ */
+function getFavoritos(){
+  try { return JSON.parse(localStorage.getItem('infusiones_favoritos') || '[]'); }
+  catch(e){ return []; }
+}
+function guardarFavorito(fav){
+  const favs = getFavoritos();
+  fav.id = 'fav_' + Date.now() + '_' + Math.random().toString(36).slice(2,7);
+  favs.push(fav);
+  localStorage.setItem('infusiones_favoritos', JSON.stringify(favs));
+  return fav.id;
+}
+function eliminarFavorito(id){
+  const favs = getFavoritos().filter(f => f.id !== id);
+  localStorage.setItem('infusiones_favoritos', JSON.stringify(favs));
+}
+function esFavoritoGuardado(clave){
+  return getFavoritos().some(f => f.clave === clave);
+}
+ 
+/* ============ TEMPORIZADOR ============ */
+const timers = {};
+ 
+function parseTiempoASegundos(tiempoStr){
+  const nums = (tiempoStr.match(/\d+/g) || []).map(Number);
+  if(nums.length === 0) return 300;
+  const prom = nums.reduce((a,b)=>a+b,0) / nums.length;
+  return Math.round(prom) * 60;
+}
+ 
+function iniciarTemporizador(timerId, segundosTotales){
+  if(timers[timerId]) clearInterval(timers[timerId].interval);
+  let restante = segundosTotales;
+  const display = document.getElementById(`timer-display-${timerId}`);
+  const btn = document.getElementById(`timer-btn-${timerId}`);
+  if(!display) return;
+ 
+  function actualizar(){
+    const m = Math.floor(restante/60).toString().padStart(2,'0');
+    const s = (restante%60).toString().padStart(2,'0');
+    display.textContent = `${m}:${s}`;
+  }
+  actualizar();
+  if(btn) btn.textContent = 'Reiniciar';
+ 
+  timers[timerId] = { interval: setInterval(() => {
+    restante--;
+    if(restante < 0){
+      clearInterval(timers[timerId].interval);
+      display.textContent = '¡Listo! ✓';
+      if(navigator.vibrate) navigator.vibrate([300,100,300]);
+      return;
+    }
+    actualizar();
+  }, 1000) };
+}
 const root = document.getElementById('app');
  
 function leafSVG(){
@@ -404,6 +461,7 @@ function progressDots(active){
  
 function render(){
   if(state.step === 1) return renderStep1();
+  if(state.step === 'favoritos') return renderFavoritos();
   if(state.step === 'bloqueo_bebe') return renderBloqueoBebe();
   if(state.step === 'alarma') return renderAlarma();
   if(state.step === 'no_reconocido') return renderNoReconocido();
@@ -413,6 +471,7 @@ function render(){
 }
  
 function renderStep1(){
+  const favs = getFavoritos();
   root.innerHTML = `
     <div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1><p class="sub">Contame qué te está pasando y te sugiero una infusión.</p></div>
     ${progressDots(1)}
@@ -424,7 +483,9 @@ function renderStep1(){
       </div>
       <button class="btn" id="btn-continuar">Continuar</button>
     </div>
+    <button class="btn secondary" id="btn-favoritos" style="margin-top:14px;">★ Mis favoritos ${favs.length ? `(${favs.length})` : ''}</button>
   `;
+  document.getElementById('btn-favoritos').onclick = () => { state.step = 'favoritos'; render(); };
   document.getElementById('btn-continuar').onclick = () => {
     const val = document.getElementById('sintoma-input').value.trim();
     if(!val){ document.getElementById('error-vacio').style.display = 'block'; return; }
@@ -443,6 +504,40 @@ function renderStep1(){
     state.step = 2;
     render();
   };
+}
+ 
+function renderFavoritos(){
+  const favs = getFavoritos();
+  let html = `<div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>`;
+  html += `<p class="section-heading">Tus infusiones guardadas</p>`;
+ 
+  if(favs.length === 0){
+    html += `
+      <div class="redirect-card">
+        <h2>Todavía no guardaste nada</h2>
+        <p>Cuando encuentres una infusión o combinación que te sirvió, tocá "★ Guardar" para tenerla siempre a mano acá.</p>
+      </div>`;
+  } else {
+    favs.forEach(f => {
+      html += `
+        <div class="result-card">
+          <h3>${f.titulo}</h3>
+          ${f.ingredientes ? `<div class="combo-ingredientes" style="margin-bottom:12px;">${f.ingredientes.map(i => `<span>${i.nombre}${i.gramos ? ' — '+i.gramos+' g' : ''}</span>`).join('')}</div>` : ''}
+          ${f.pasos ? `<div class="combo-pasos">${f.pasos.map(p => `<p>${p}</p>`).join('')}</div>` : ''}
+          ${f.precauciones && f.precauciones.length ? `<div class="precaution">${f.precauciones.join(' ')}</div>` : ''}
+          <button class="btn secondary" style="margin-top:14px;" data-fav-id="${f.id}">Quitar de favoritos</button>
+        </div>
+      `;
+    });
+  }
+ 
+  html += `<div class="footer-actions"><button class="btn secondary" id="btn-volver">Volver</button></div>`;
+  root.innerHTML = html;
+ 
+  document.getElementById('btn-volver').onclick = resetApp;
+  root.querySelectorAll('[data-fav-id]').forEach(b => {
+    b.onclick = () => { eliminarFavorito(b.dataset.favId); render(); };
+  });
 }
  
 function renderBloqueoBebe(){
@@ -538,6 +633,8 @@ function renderStep2(){
 function renderStep3(){
   const cat = state.categoria;
   const incluidas = [], excluidas = [];
+  const favData = [];   // datos para los botones "Guardar"
+  const timerData = []; // datos para los botones de temporizador
  
   cat.plantas.forEach(p => {
     const planta = PLANTS[p.id];
@@ -560,6 +657,22 @@ function renderStep3(){
  
   if(cat.nota) html += `<div class="notice">${cat.nota}</div>`;
  
+  function botonGuardar(favObj){
+    const idx = favData.length;
+    favData.push(favObj);
+    return `<button class="btn secondary btn-guardar" data-guardar="${idx}" style="margin-top:12px;">★ Guardar</button>`;
+  }
+ 
+  function botonTimer(tiempoStr){
+    const idx = timerData.length;
+    timerData.push(parseTiempoASegundos(tiempoStr));
+    return `
+      <div class="row" style="align-items:center; margin-top:10px;">
+        <button class="btn secondary" id="timer-btn-${idx}" data-timer="${idx}" style="width:auto; padding:8px 14px; font-size:13px;">Iniciar temporizador</button>
+        <span id="timer-display-${idx}" style="font-family:'IBM Plex Mono', monospace; font-size:15px; color:var(--gold);"></span>
+      </div>`;
+  }
+ 
   if(cat.combosManual){
     html += `<p class="section-heading">Para "${cat.titulo.toLowerCase()}", estas recetas te pueden servir:</p>`;
     cat.combosManual.forEach(receta => {
@@ -573,6 +686,7 @@ function renderStep3(){
         if(state.medicacion === 'si' && prec.medicacion) advertencias.add(prec.medicacion);
         if(prec.otra) advertencias.add(prec.otra);
       });
+      const advArr = Array.from(advertencias);
       html += `
         <div class="combo-card">
           <h3>${receta.nombre}</h3>
@@ -583,7 +697,8 @@ function renderStep3(){
             ${receta.pasos.map(p => `<p>${p}</p>`).join('')}
             ${receta.notaExtra ? `<p><em>${receta.notaExtra}</em></p>` : ''}
           </div>
-          ${advertencias.size ? `<div class="precaution">${Array.from(advertencias).join(' ')}</div>` : ''}
+          ${advArr.length ? `<div class="precaution">${advArr.join(' ')}</div>` : ''}
+          ${botonGuardar({ titulo: receta.nombre, clave:'receta_'+receta.nombre, ingredientes: receta.componentes.map(c=>({nombre:PLANTS[c.id].nombre, gramos:c.gramos})), pasos: receta.pasos, precauciones: advArr })}
         </div>
       `;
     });
@@ -606,18 +721,22 @@ function renderStep3(){
           </div>
           <div class="combo-pasos">${combo.pasos.map(p => `<p>${p}</p>`).join('')}</div>
           ${combo.precauciones.length ? `<div class="precaution">${combo.precauciones.join(' ')}</div>` : ''}
+          ${botonGuardar({ titulo:`Combinación para ${cat.titulo}`, clave:'combo_'+cat.id, ingredientes: combo.ingredientes, pasos: combo.pasos, precauciones: combo.precauciones })}
         </div>
       `;
     }
  
     html += `<p class="section-heading">O por separado, esto puede ayudarte:</p>`;
     incluidas.forEach(item => {
+      const prepTexto = `${item.planta.tempo}, ${item.planta.tiempo}, ${item.planta.g} g/litro. En frío: ${item.planta.frio}.`;
       html += `
         <div class="result-card">
           <h3>${item.planta.nombre}</h3>
           <p class="why">${item.motivo}</p>
-          <div class="row"><span class="tag">Preparación</span><span>${item.planta.tempo}, ${item.planta.tiempo}, ${item.planta.g} g/litro. En frío: ${item.planta.frio}.</span></div>
+          <div class="row"><span class="tag">Preparación</span><span>${prepTexto}</span></div>
+          ${botonTimer(item.planta.tiempo)}
           ${item.advertencias.length ? `<div class="precaution">${item.advertencias.join(' ')}</div>` : ''}
+          ${botonGuardar({ titulo: item.planta.nombre, clave:'planta_'+item.id, ingredientes:[{nombre:item.planta.nombre, gramos:item.planta.g}], pasos:[prepTexto], precauciones: item.advertencias })}
         </div>
       `;
     });
@@ -635,6 +754,20 @@ function renderStep3(){
  
   root.innerHTML = html;
   document.getElementById('btn-otro').onclick = resetApp;
+ 
+  root.querySelectorAll('[data-guardar]').forEach(b => {
+    b.onclick = () => {
+      guardarFavorito(favData[Number(b.dataset.guardar)]);
+      b.textContent = '★ Guardado';
+      b.disabled = true;
+    };
+  });
+  root.querySelectorAll('[data-timer]').forEach(b => {
+    b.onclick = () => {
+      const idx = Number(b.dataset.timer);
+      iniciarTemporizador(idx, timerData[idx]);
+    };
+  });
 }
  
 function resetApp(){
