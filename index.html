@@ -244,6 +244,8 @@ const PLANTS = {
     precauciones:{ embarazo:"advertencia", medicacion:"Leve efecto sobre coagulación — precaución con anticoagulantes.", otra:"Contraindicada con cálculos biliares. Suspender antes de cirugías programadas." } },
   salvia: { nombre:"Salvia", g:2.5, metodo:"infusion", tapar:true, tempo:"90-100°C", tiempo:"5-7 min", frio:"4-6 hs",
     precauciones:{ embarazo:"excluir", medicacion:"Precaución con medicación para la presión o anticonvulsivantes.", otra:"No tomar de forma continua e indefinida — usar en ciclos con descansos." } },
+  romero: { nombre:"Romero", g:4, metodo:"infusion", tapar:false, tempo:"90-100°C", tiempo:"5-8 min", frio:"4-6 hs",
+    precauciones:{ embarazo:"excluir", medicacion:"Precaución con anticoagulantes, diuréticos, litio y medicación para la presión. Puede afectar el azúcar en sangre — precaución con medicación para diabetes.", otra:"Contraindicado en epilepsia (dosis altas pueden favorecer convulsiones). Contraindicado con cálculos biliares. No usar en niños menores de 5 años. Se recomienda uso intermitente (unos meses sí, uno de descanso), no continuo." } },
 };
  
 const SINTOMAS = [
@@ -261,6 +263,7 @@ const SINTOMAS = [
       {id:"hinojo", motivo:"Clásico para gases e hinchazón."},
       {id:"anis_verde", motivo:"Digestivo, dupla tradicional con el hinojo."},
       {id:"manzanilla", motivo:"Relaja el músculo digestivo, sin el riesgo de reflujo de la menta."},
+      {id:"romero", motivo:"Antioxidante y digestivo, tradicionalmente usado después de comidas pesadas."},
     ]},
   { id:"comida_pesada", keywords:["comi mucho","comida pesada","grasos","asado","empach"], titulo:"Comida muy pesada o grasosa",
     plantas:[
@@ -792,4 +795,5 @@ if('serviceWorker' in navigator){
 </body>
 </html>
  
+
 
