@@ -59,7 +59,7 @@
   .header h1{font-size:30px; letter-spacing:-0.01em;}
   .header .sub{color:var(--paper-dim); font-size:15px; margin-top:8px;}
   .header .brand-tag{color:var(--gold); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; margin-top:10px; font-family:'IBM Plex Mono', monospace;}
- 
+
   .kit-badge{
     text-align:center; color:var(--gold); font-size:12.5px; letter-spacing:0.08em;
     text-transform:uppercase; margin-bottom:18px; font-family:'IBM Plex Mono', monospace;
@@ -206,6 +206,21 @@
   .footer-actions{margin-top:26px;}
   small.hint{display:block; color:var(--paper-dim); font-size:12.5px; margin-top:6px;}
  
+  .contacto-card{
+    margin-top:30px;
+    background:linear-gradient(180deg, rgba(201,162,39,0.10), rgba(201,162,39,0.03));
+    border:1px solid var(--gold);
+    border-radius:14px;
+    padding:22px 22px 20px;
+    text-align:center;
+  }
+  .contacto-card .brand-tag{color:var(--gold); font-size:11px; letter-spacing:0.16em; text-transform:uppercase; font-family:'IBM Plex Mono', monospace; margin-bottom:8px;}
+  .contacto-card h3{font-size:19px; margin-bottom:8px;}
+  .contacto-card .contacto-sub{color:var(--paper-dim); font-size:14px; margin-bottom:14px;}
+  .contacto-card .combo-ingredientes{justify-content:center; margin-bottom:16px;}
+  .contacto-card .btn-wa{text-decoration:none; box-sizing:border-box;}
+  .contacto-card .contacto-num{color:var(--paper-dim); font-size:12.5px; margin-top:10px; font-family:'IBM Plex Mono', monospace;}
+
   @media (max-width:480px){ .app{padding:28px 16px 60px;} }
 </style>
 </head>
@@ -346,8 +361,11 @@ const SINTOMAS = [
 const KITS = {
   dormir: { categoriaId:"insomnio", nombre:"Para dormir" },
   inflamacion: { categoriaId:"inflamacion", nombre:"Para inflamación" },
+  reflujo: { categoriaId:"reflujo", nombre:"Para acidez o reflujo" },
+  guayabo: { categoriaId:"guayabo", nombre:"Para guayabo" },
+  colicos: { categoriaId:"colicos_menstruales", nombre:"Para cólicos menstruales" },
 };
- 
+
 const PALABRAS_BEBE = ["bebe","bebé","recien nacido","recién nacido","lactante","niño","niña","mi hijo","mi hija"];
  
 /* Si aparece cualquiera de estas, se prioriza por sobre cualquier categoría de síntoma matcheada */
@@ -476,6 +494,27 @@ function leafSVG(){
   </svg>`;
 }
  
+/* Tarjeta de contacto para pedir kits */
+const WHATSAPP_NUM = "573148133275";
+const KITS_DISPONIBLES = ["Para dormir", "Para inflamación", "Para acidez o reflujo", "Para guayabo", "Para cólicos menstruales"];
+
+function contactoHTML(){
+  const kitTxt = state.esKit ? ` "${state.kitNombre}"` : '';
+  const msg = `Hola, vi la app Como la Abuela y quiero pedir un kit${kitTxt}.`;
+  const link = `https://wa.me/${WHATSAPP_NUM}?text=${encodeURIComponent(msg)}`;
+  return `
+    <div class="contacto-card">
+      <p class="brand-tag">Como la Abuela</p>
+      <h3>¿Querés un kit de infusiones?</h3>
+      <p class="contacto-sub">Armamos kits listos para preparar, hechos a mano. Escribinos y te contamos cómo pedirlo.</p>
+      <div class="combo-ingredientes">
+        ${KITS_DISPONIBLES.map(k => `<span>${k}</span>`).join('')}
+      </div>
+      <a class="btn btn-wa" href="${link}" target="_blank" rel="noopener">Pedir por WhatsApp</a>
+      <p class="contacto-num">+57 314 813 3275</p>
+    </div>`;
+}
+
 function progressDots(active){
   let dots = '';
   for(let i=1;i<=3;i++) dots += `<div class="dot ${i<=active?'done':''}"></div>`;
@@ -507,6 +546,7 @@ function renderStep1(){
       <button class="btn" id="btn-continuar">Continuar</button>
     </div>
     <button class="btn secondary" id="btn-favoritos" style="margin-top:14px;">★ Mis favoritos ${favs.length ? `(${favs.length})` : ''}</button>
+    ${contactoHTML()}
   `;
   document.getElementById('btn-favoritos').onclick = () => { state.step = 'favoritos'; render(); };
   document.getElementById('btn-continuar').onclick = () => {
@@ -680,7 +720,7 @@ function renderStep3(){
   let html = `<div class="header">${leafSVG()}<h1>¿Qué te tomás?</h1></div>`;
   if(state.esKit) html += `<p class="kit-badge">Kit ${state.kitNombre} — Como la Abuela</p>`;
   html += progressDots(3);
- 
+
   if(cat.nota) html += `<div class="notice">${cat.nota}</div>`;
  
   function botonGuardar(favObj){
@@ -776,6 +816,7 @@ function renderStep3(){
     });
   }
  
+  html += contactoHTML();
   html += `<div class="footer-actions"><button class="btn secondary" id="btn-otro">Buscar otro síntoma</button></div>`;
  
   root.innerHTML = html;
@@ -803,7 +844,7 @@ function resetApp(){
   }
   render();
 }
- 
+
 (function iniciarApp(){
   const params = new URLSearchParams(window.location.search);
   const kitId = params.get('kit');
@@ -828,10 +869,3 @@ if('serviceWorker' in navigator){
 </script>
 </body>
 </html>
- 
- 
-
- 
- 
- 
-  
